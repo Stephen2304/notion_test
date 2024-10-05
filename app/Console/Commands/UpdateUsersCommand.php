@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class UpdateUsersCommand extends Command
 {
@@ -27,6 +28,7 @@ class UpdateUsersCommand extends Command
      */
     public function handle()
     {
+        // Créer une instance de Faker
         $faker = Faker::create();
 
         $timezones = ['CET', 'CST', 'GMT+1'];
@@ -34,13 +36,20 @@ class UpdateUsersCommand extends Command
         $users = User::all();
 
         foreach ($users as $user) {
+            $newFirstName = $faker->firstName;
+            $newLastName = $faker->lastName;
+            $newTimezone = $faker->randomElement($timezones);
+
             $user->update([
-                'name' => $faker->firstName, 
-                'email' => $faker->lastName . '@example.com', 
-                'timezone' => $faker->randomElement($timezones), 
+                'name' => $newFirstName . ' ' . $newLastName,
+                'timezone' => $newTimezone,
             ]);
+
+            Log::info("[" . $user->id . "] firstname: {$newFirstName}, lastname: {$newLastName}, timezone: '{$newTimezone}'");
+
+            $this->info("[" . $user->id . "] firstname: {$newFirstName}, lastname: {$newLastName}, timezone: '{$newTimezone}'");
         }
 
-        $this->info('Users have been updated successfully.');
+        $this->info('All users have been updated and logged successfully.');
     }
 }

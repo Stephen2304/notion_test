@@ -36,18 +36,17 @@ class UpdateUsersCommand extends Command
         $users = User::all();
 
         foreach ($users as $user) {
-            $newFirstName = $faker->firstName;
-            $newLastName = $faker->lastName;
+            $name = $faker->firstName();
             $newTimezone = $faker->randomElement($timezones);
 
             $user->update([
-                'name' => $newFirstName . ' ' . $newLastName,
+                'name' => $name,
                 'timezone' => $newTimezone,
             ]);
 
-            Log::info("[" . $user->id . "] firstname: {$newFirstName}, lastname: {$newLastName}, timezone: '{$newTimezone}'");
+            Log::info("[" . $user->id . "] firstname: {$name}, timezone: '{$newTimezone}'");
 
-            $this->info("[" . $user->id . "] firstname: {$newFirstName}, lastname: {$newLastName}, timezone: '{$newTimezone}'");
+            $this->info("[" . $user->id . "] firstname: {$name}, timezone: '{$newTimezone}'");
         }
 
         $this->info('All users have been updated and logged successfully.');
